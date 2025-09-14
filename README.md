@@ -36,149 +36,135 @@ A full-stack movie booking system built with the MERN stack, allowing users to b
 
 ### User Features
 - User registration and authentication
-- Browse cinemas by location
 - View movie details and showtimes
 - Select up to 6 seats per booking
 - Booking confirmation with payment simulation
 - View booking history and details
-- User profile management
-
-### Admin Features (Data Management)
-- Pre-populated cinema data
-- Movie catalog with details
-- Screen and seat layout management
-- Show scheduling system
 
 ## 🗄️ Database Schema
 
 ### Users Collection
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  email: String (unique),
-  password: String (hashed),
-  phone: String,
-  createdAt: Date,
-  updatedAt: Date
-}
+```
+| Field     | Type     | Description               |
+| --------- | -------- | ------------------------- |
+| \_id      | ObjectId | Primary Key               |
+| name      | String   | Full name of the user     |
+| email     | String   | Unique, user’s email      |
+| password  | String   | Hashed password           |
+| phone     | String   | User’s phone number       |
+| createdAt | Date     | Record creation timestamp |
+| updatedAt | Date     | Record update timestamp   |
 ```
 
-### Cinemas Collection
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  location: {
-    address: String,
-    city: String,
-    state: String,
-    pincode: String
-  },
-  totalScreens: Number,
-  amenities: [String],
-  isActive: Boolean,
-  createdAt: Date,
-  updatedAt: Date
-}
+### Cinemas Table
+```
+| Field        | Type      | Description                 |
+| ------------ | --------- | --------------------------- |
+| \_id         | ObjectId  | Primary Key                 |
+| name         | String    | Cinema name                 |
+| location     | Object    | Address details             |
+| └ address    | String    | Street address              |
+| └ city       | String    | City name                   |
+| └ state      | String    | State name                  |
+| └ pincode    | String    | Postal code                 |
+| totalScreens | Number    | Number of screens in cinema |
+| amenities    | \[String] | Available facilities        |
+| isActive     | Boolean   | Cinema active/inactive      |
+| createdAt    | Date      | Record creation timestamp   |
+| updatedAt    | Date      | Record update timestamp     |
 ```
 
-### Screens Collection
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  cinema: ObjectId (ref: Cinema),
-  capacity: Number,
-  seatLayout: {
-    rows: Number,
-    seatsPerRow: Number
-  },
-  screenType: String,
-  soundSystem: String,
-  isActive: Boolean,
-  createdAt: Date,
-  updatedAt: Date
-}
+### Screen Table
+```
+| Field         | Type     | Description               |
+| ------------- | -------- | ------------------------- |
+| \_id          | ObjectId | Primary Key               |
+| name          | String   | Screen name/number        |
+| cinema        | ObjectId | Reference → Cinema        |
+| capacity      | Number   | Total seat capacity       |
+| seatLayout    | Object   | Seating arrangement       |
+| └ rows        | Number   | Number of seat rows       |
+| └ seatsPerRow | Number   | Seats per row             |
+| screenType    | String   | Type (e.g., IMAX, 2D, 3D) |
+| soundSystem   | String   | Sound system used         |
+| isActive      | Boolean  | Screen active/inactive    |
+| createdAt     | Date     | Record creation timestamp |
+| updatedAt     | Date     | Record update timestamp   |
 ```
 
-### Movies Collection
-```javascript
-{
-  _id: ObjectId,
-  title: String,
-  description: String,
-  genre: [String],
-  duration: Number,
-  releaseDate: Date,
-  rating: String,
-  language: String,
-  cast: [{
-    name: String,
-    role: String
-  }],
-  director: String,
-  producer: String,
-  posterUrl: String,
-  trailerUrl: String,
-  isActive: Boolean,
-  imdbRating: Number,
-  createdAt: Date,
-  updatedAt: Date
-}
+### Movie Table
+```
+| Field       | Type      | Description                    |
+| ----------- | --------- | ------------------------------ |
+| \_id        | ObjectId  | Primary Key                    |
+| title       | String    | Movie title                    |
+| description | String    | Short movie description        |
+| genre       | \[String] | List of genres                 |
+| duration    | Number    | Duration in minutes            |
+| releaseDate | Date      | Release date                   |
+| rating      | String    | Censor rating (U, UA, A, etc.) |
+| language    | String    | Language                       |
+| cast        | \[Object] | Actors and roles               |
+| └ name      | String    | Actor name                     |
+| └ role      | String    | Role in movie                  |
+| director    | String    | Movie director                 |
+| producer    | String    | Movie producer                 |
+| posterUrl   | String    | Poster image link              |
+| trailerUrl  | String    | Trailer video link             |
+| isActive    | Boolean   | Active/inactive movie          |
+| imdbRating  | Number    | IMDb rating                    |
+| createdAt   | Date      | Record creation timestamp      |
+| updatedAt   | Date      | Record update timestamp        |
 ```
 
-### Shows Collection
-```javascript
-{
-  _id: ObjectId,
-  movie: ObjectId (ref: Movie),
-  screen: ObjectId (ref: Screen),
-  cinema: ObjectId (ref: Cinema),
-  date: Date,
-  startTime: String,
-  endTime: String,
-  price: {
-    regular: Number,
-    premium: Number,
-    recliner: Number
-  },
-  availableSeats: Number,
-  bookedSeats: [{
-    row: String,
-    seatNumber: Number
-  }],
-  isActive: Boolean,
-  createdAt: Date,
-  updatedAt: Date
-}
+### Show Table
+```
+| Field          | Type      | Description               |
+| -------------- | --------- | ------------------------- |
+| \_id           | ObjectId  | Primary Key               |
+| movie          | ObjectId  | Reference → Movie         |
+| screen         | ObjectId  | Reference → Screen        |
+| cinema         | ObjectId  | Reference → Cinema        |
+| date           | Date      | Show date                 |
+| startTime      | String    | Start time                |
+| endTime        | String    | End time                  |
+| price          | Object    | Ticket pricing            |
+| └ regular      | Number    | Regular ticket price      |
+| └ premium      | Number    | Premium ticket price      |
+| └ recliner     | Number    | Recliner ticket price     |
+| availableSeats | Number    | Available seats           |
+| bookedSeats    | \[Object] | Booked seats              |
+| └ row          | String    | Seat row                  |
+| └ seatNumber   | Number    | Seat number               |
+| isActive       | Boolean   | Active/inactive show      |
+| createdAt      | Date      | Record creation timestamp |
+| updatedAt      | Date      | Record update timestamp   |
 ```
 
-### Bookings Collection
-```javascript
-{
-  _id: ObjectId,
-  user: ObjectId (ref: User),
-  show: ObjectId (ref: Show),
-  movie: ObjectId (ref: Movie),
-  cinema: ObjectId (ref: Cinema),
-  screen: ObjectId (ref: Screen),
-  seats: [{
-    row: String,
-    seatNumber: Number,
-    type: String,
-    price: Number
-  }],
-  totalAmount: Number,
-  bookingDate: Date,
-  showDate: Date,
-  showTime: String,
-  status: String,
-  paymentStatus: String,
-  bookingReference: String (unique),
-  createdAt: Date,
-  updatedAt: Date
-}
+### Booking Table
+```
+| Field            | Type      | Description                          |
+| ---------------- | --------- | ------------------------------------ |
+| \_id             | ObjectId  | Primary Key                          |
+| user             | ObjectId  | Reference → User                     |
+| show             | ObjectId  | Reference → Show                     |
+| movie            | ObjectId  | Reference → Movie                    |
+| cinema           | ObjectId  | Reference → Cinema                   |
+| screen           | ObjectId  | Reference → Screen                   |
+| seats            | \[Object] | Seat details                         |
+| └ row            | String    | Seat row                             |
+| └ seatNumber     | Number    | Seat number                          |
+| └ type           | String    | Seat type (Regular/Premium)          |
+| └ price          | Number    | Price per seat                       |
+| totalAmount      | Number    | Total booking amount                 |
+| bookingDate      | Date      | Date of booking                      |
+| showDate         | Date      | Show date                            |
+| showTime         | String    | Show start time                      |
+| status           | String    | Booking status (Confirmed/Cancelled) |
+| paymentStatus    | String    | Payment status (Paid/Pending)        |
+| bookingReference | String    | Unique booking ID                    |
+| createdAt        | Date      | Record creation timestamp            |
+| updatedAt        | Date      | Record update timestamp              |
 ```
 
 ## 🛠️ Installation & Setup
@@ -314,27 +300,6 @@ The application is fully responsive and optimized for:
 - Desktop (1024px+)
 - Tablet (768px - 1024px)
 - Mobile (320px - 768px)
-
-## 🚀 Deployment
-
-### Backend Deployment (Railway/Render)
-1. Create account on Railway or Render
-2. Connect your GitHub repository
-3. Set environment variables in the deployment platform
-4. Deploy with automatic builds
-
-### Frontend Deployment (Vercel/Netlify)
-1. Create account on Vercel or Netlify
-2. Connect your GitHub repository
-3. Set build command: `npm run build`
-4. Set environment variables
-5. Deploy with automatic deployments
-
-### Database (MongoDB Atlas)
-1. Create MongoDB Atlas account
-2. Create a cluster
-3. Get connection string
-4. Update `MONGODB_URI` in your backend environment
 
 ## 🧪 Testing
 
